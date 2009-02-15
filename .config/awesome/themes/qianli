@@ -1,0 +1,70 @@
+---------------------------
+-- qianli's Awesome Theme --
+---------------------------
+
+# Font
+font                      = Terminus Bold 9
+
+# BG
+bg_normal                 = #12121288
+#bg_focus                  = #5a5a5a88
+#bg_focus                  = #8cbee8
+bg_focus                  = #4169e188
+bg_urgent                 = #ffc0cb88
+
+# FG
+#fg_normal                 = #5a5a5a
+fg_normal                 = #dddddd
+fg_focus                  = #ffffff
+fg_urgent                 = #1e90ff
+fg_widg                   = #949494
+
+# Border
+border_width              = 1
+border_width_wibox        = 0
+border_normal             = #292929
+border_wibox              = #5a5a5a
+border_focus              = #5a5a5a
+border_marked             = #a020f0
+
+# Menu
+menu_submenu_icon         = /home/qianli/.config/awesome/icons/submenu.png
+menu_height               = 15
+menu_width                = 96
+border_width_menu         = 1
+
+# Taglist Icons
+taglist_squares           = true
+taglist_squares_sel       = /usr/share/awesome/themes/default/taglist/squarefw.png
+taglist_squares_unsel     = /usr/share/awesome/themes/default/taglist/squarew.png
+
+# Wibox Icons
+tasklist_floating_icon    = /home/qianli/.config/awesome/icons/layouts/floatingw.png
+awesome_icon              = /home/qianli/.config/awesome/icons/awesome16_gray_darker.png
+arch_icon                 = /home/qianli/.config/awesome/icons/arch_grey.png
+pacic                     = /home/qianli/.config/awesome/icons/pacman.png
+sepic                     = /home/qianli/.config/awesome/icons/separators/link14.png
+wifiic                    = /home/qianli/.config/awesome/icons/wifi.png
+cpuic                     = /home/qianli/.config/awesome/icons/cpu.png
+tempic                    = /home/qianli/.config/awesome/icons/temp.png
+memic                     = /home/qianli/.config/awesome/icons/mem.png
+batic                     = /home/qianli/.config/awesome/icons/bat.png
+volic                     = /home/qianli/.config/awesome/icons/vol.png
+fsic                      = /home/qianli/.config/awesome/icons/accordion.png
+netupic                   = /home/qianli/.config/awesome/icons/up.png
+netdnic                   = /home/qianli/.config/awesome/icons/down.png
+
+# Wall
+wallpaper_cmd             =  nitrogen --restore
+
+# Layout Icons
+layout_fairh              = /usr/share/awesome/themes/default/layouts/fairhw.png
+layout_fairv              = /usr/share/awesome/themes/default/layouts/fairvw.png
+layout_floating           = /usr/share/awesome/themes/default/layouts/floatingw.png
+layout_magnifier          = /usr/share/awesome/themes/default/layouts/magnifierw.png
+layout_max                = /usr/share/awesome/themes/default/layouts/maxw.png
+layout_tilebottom         = /usr/share/awesome/themes/default/layouts/tilebottomw.png
+layout_tileleft           = /usr/share/awesome/themes/default/layouts/tileleftw.png
+layout_tile               = /usr/share/awesome/themes/default/layouts/tilew.png
+layout_tiletop            = /usr/share/awesome/themes/default/layouts/tiletopw.png
+# vim: ft=conf

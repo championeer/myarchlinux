@@ -1,0 +1,80 @@
+---------------------------
+-- Default awesome theme --
+---------------------------
+
+#font          = Auriol LT Std Bold Italic 10 
+#font          = Segoe Print Bold 10
+font          = Terminus 9
+
+bg_normal     = #44444400
+bgb_normal     = #44444400
+bg_focus      = #111111
+bg_urgent     = #ff5656
+
+#fg_normal     = #e2d6a5
+fg_normal     = #dddddd
+fg_focus      = #8cbee8
+fg_urgent     = #ffffff
+
+border_width  = 1
+border_normal = #444444
+border_focus  = #8cbee8
+#border_focus  = #e35a9f
+border_marked = #ff6600
+
+# There are another variables sets
+# overriding the default one when
+# defined, the sets are:
+# [taglist|tasklist]_[bg|fg]_[focus|urgent]
+# titlebar_[bg|fg]_[normal|focus]
+# Example:
+#taglist_bg_focus = #ff0000
+
+# Display the taglist squares
+taglist_squares_sel = /usr/share/awesome/themes/default/taglist/squarefw.png
+taglist_squares_unsel = /usr/share/awesome/themes/default/taglist/squarew.png
+
+tasklist_floating_icon = /usr/share/awesome/themes/default/tasklist/floatingw.png
+
+# Variables set for theming menu
+# menu_[bg|fg]_[normal|focus]
+# menu_[border_color|border_width]
+menu_submenu_icon = /usr/share/awesome/themes/default/submenu.png
+menu_height   = 15
+menu_width    = 100
+
+# You can use your own command to
+# set your wallpaper
+#wallpaper_cmd = xsetroot -solid darkgrey
+wallpaper_cmd = nitrogen --restore
+
+# You can add as many variables as
+# you wish and access them by using
+# beautiful.variable in your rc.lua
+#bg_widget    = #cc0000
+
+# Display close button inside titlebar
+titlebar_close_button = true
+
+# Define the image to load
+@ (if titlebar_close_button_[normal|focus] these values are ignored)
+#titlebar_close_button_img_normal = /usr/share/awesome/themes/default/titlebar/closea.png
+#titlebar_close_button_img_focus = /usr/share/awesome/themes/default/titlebar/closera.png
+# Or create your own close button
+#titlebar_close_button_normal = <span>...</span>
+#titlebar_close_button_focus = <span>...</span>
+
+# You can use your own layout icons like this:
+layout_dwindle = /usr/share/awesome/themes/default/layouts/dwindlew.png
+layout_fairh = /usr/share/awesome/themes/default/layouts/fairhw.png
+layout_fairv = /usr/share/awesome/themes/default/layouts/fairvw.png
+layout_floating = /usr/share/awesome/themes/default/layouts/floatingw.png
+layout_magnifier = /usr/share/awesome/themes/default/layouts/magnifierw.png
+layout_max = /usr/share/awesome/themes/default/layouts/maxw.png
+layout_spiral = /usr/share/awesome/themes/default/layouts/spiralw.png
+layout_tilebottom = /usr/share/awesome/themes/default/layouts/tilebottomw.png
+layout_tileleft = /usr/share/awesome/themes/default/layouts/tileleftw.png
+layout_tile = /usr/share/awesome/themes/default/layouts/tilew.png
+layout_tiletop = /usr/share/awesome/themes/default/layouts/tiletopw.png
+
+awesome_icon = /usr/share/awesome/icons/awesome16.png

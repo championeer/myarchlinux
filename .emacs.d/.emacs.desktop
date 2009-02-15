@@ -1,0 +1,28 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Sat May 10 19:42:39 2008
+;; Desktop file format version 206
+;; Emacs version 23.0.60.6
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring nil)
+(setq register-alist nil)
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/qianli/Documents/Linux/emacs/emacs-quickstart.tex"
+  "emacs-quickstart.tex"
+  'latex-mode
+  '(auto-fill-mode)
+  2105
+  '(25168 nil)
+  nil
+  nil
+  '((indent-tabs-mode) (buffer-file-coding-system . utf-8-unix) (overwrite-mode)))
+

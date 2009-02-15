@@ -1,0 +1,1 @@
+htmlspecialchars.vba: call delete('/home/qianli/.vim/ftplugin/html/htmlspecialchars.vim')|call delete('/home/qianli/.vim/doc/htmlspecialchars.txt')
