@@ -1,0 +1,3 @@
+#!/bin/bash
+#在本机和远程SSH主机之间建立一条SSH tunnel，以便翻过GFW:)
+ssh -qTfnN -D 7070 -l qianli blogandblogger.com

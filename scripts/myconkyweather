@@ -1,0 +1,99 @@
+# maintain spacing between certain elements
+use_spacer right
+
+# set to yes if you want tormo to be forked in the background
+background no
+
+use_xft yes
+
+# Xft font when Xft is enabled
+#xftfont Vera-8
+#xftfont Andale Mono-8
+#xftfont Clean-8
+#xftfont cubicfive10:pixelsize=8
+#xftfont Sans-Serif:size=9:pixelsize=11
+#xftfont swf!t_v02:pixelsize=11
+font Microsoft YaHei:size=8
+xftfont Microsoft YaHei:size=8
+
+# Text alpha when using Xft
+xftalpha 0.8
+#mail_spool $MAIL
+
+# Update interval in seconds
+update_interval 2.0
+
+# Create own window instead of using desktop (required in nautilus) normal desktop or override
+own_window yes
+own_window_type override
+own_window_transparent yes
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+
+#own_window_hints below
+
+# Use double buffering (reduces flicker, may not work for everyone)
+double_buffer yes
+
+# Minimum size of text area
+minimum_size 100 5
+maximum_width 400
+
+# Draw shades?
+draw_shades no
+
+# Draw outlines?
+draw_outline no # amplifies text
+
+# Draw borders around text
+draw_borders no
+
+# Stippled borders?
+stippled_borders 3
+
+# border margins
+border_margin 5
+
+# border widt5
+border_width 6
+
+# Default colors and also border colors,
+default_color gold
+default_shade_color black
+default_outline_color DarkGrey
+
+
+# Text alignment, other possible values are commented
+#alignment top_left
+alignment top_right
+#alignment bottom_left
+#alignment bottom_right
+
+# Gap between borders of screen and text
+gap_x 300
+gap_y 17
+
+# Subtract file system buffers from used memory?
+no_buffers yes
+
+# set to yes if you want all text to be in uppercase
+uppercase no
+
+
+TEXT
+${voffset -6}${font Weather:size=30}${color #ffa500}I ${voffset -8}${font Anklepants:regular:size=11}${color #5da5d3}Weather Broadcast${font}
+${voffset 5}${color white}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=CN}
+${voffset -5}${color}${hr 1}$color
+${font Weather:size=44}${color white}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=WF}${font}${color}
+${voffset -50}${offset 60}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=HT}
+${offset 60}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=BR}
+${offset 60}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=WS}km/h ${font Arrows:size=10}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=BF}$font
+      ${voffset -70}${offset 140}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=DW --startday=1 --endday=4 --spaces=12 --shortweekday}
+      ${offset 135}${voffset 5}${color white}${font Weather:size=26}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=WF --startday=1 --endday=4 --spaces=1}${font}${color}
+   ${offset 125}${color white}${font Weather:size=16}i${font}:  ${voffset -3}${color gold}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=PC --startday=1 --endday=4 --spaces=12}
+   ${offset 130}${color white}${font Weather:size=16}v${font}:  ${voffset -3}${color gold}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=WS --startday=1 --endday=4 --spaces=8}
+   ${font Arrows:size=10}${offset 180}${voffset -15}${color gold}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=BF --startday=1 --endday=1 --spaces=0}$font${offset 45}${voffset -2}${font Arrows:size=10}${color gold}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=BF --startday=2 --endday=2 --spaces=0}$font${offset 45}${font Arrows:size=10}${color gold}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=BF --startday=3 --endday=3 --spaces=0}$font${offset 45}${font Arrows:size=10}${color gold}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=BF --startday=4 --endday=4 --spaces=0}$font
+   ${offset 130}${color white}${font Weather:size=16}z${font}:   ${voffset -3}${color gold}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=HT --startday=1 --endday=4 --spaces=12}
+${voffset -40}${color white}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=CC}
+Humedad: ${color}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=HM}
+${voffset 5}${color white}Sol: ${color}${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=SR}-${execi 3600 python ~/my/scripts/conkyForecast.py --location=CHXX0008 --datatype=SS}
+${voffset -5}${color #ffd700}${hr 1}$color

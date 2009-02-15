@@ -1,0 +1,266 @@
+#!/usr/bin/lua
+
+--- Version 0.1
+--- feel free to send me enhancements etc... (awesome mailing list, wiki, or mac@calmar.ws)
+
+--==================================================
+-- FUNCTIONS
+--==================================================
+
+----------------------------------------------------
+--- add more funtions here.....
+----------------------------------------------------
+--.....
+--.....
+--.....
+
+----------------------------------------------------
+-- cpu -> cpu_percent
+-- user + nice + system + idle = 100/second)
+-- so diffs of: $2+$3+$4 / all-together * 100 = %
+-- or: 100 - ( $5 / all-together) * 100 = %
+-- or: 100 - 100 * ( $5 / all-together)= %
+----------------------------------------------------
+
+function cpu(cpuid)
+  local line, cpu_new_sum, user, nice, system, idle, diff, fh
+  local cpu_user, cpu_nice, cpu_total
+
+  fh = io.open("/proc/stat")
+  line = fh:read()
+  while line do
+    if string.match(line, cpuid) then
+      user, nice, system, idle = string.match(line, "%w+%s+(%d+)%s+(%d+)%s+(%d+)%s+(%d+)")
+
+      cpu_new_sum = user + nice + system + idle -- all-together
+      diff = cpu_new_sum - cpu_old_sum;
+
+      if diff > 0 then -- should be always true - but on heavy load no update is possible
+        cpu_user =  100 * (user - cpu_old_user) / diff;
+        cpu_nice =  100 * (nice - cpu_old_nice) / diff;
+        cpu_total = 100 - 100 * (idle - cpu_old_idle) / diff;
+      else
+        cpu_user = 100
+        cpu_nice = 100
+        cpu_total = 100
+      end
+
+      cpu_old_sum = cpu_new_sum;
+      cpu_old_user = user;
+      cpu_old_nice = nice;
+      cpu_old_idle = idle;
+
+      io.close(fh);
+      return {cpu_user, cpu_nice, cpu_total}
+    end
+    line = fh:read()
+  end
+  io.close(fh);
+end
+
+----------------------------------------------------
+-- memory
+----------------------------------------------------
+-- todo: Mem{Swap}Total would be needed only once!
+function memory(proc)
+  local mem_free, mem_total, swap_free, swap_total
+  local mem_percent, swap_percent, line, fh, count
+  count = 0
+
+  fh = io.open(proc)
+
+  line = fh:read()
+  while line and count < 4 do
+    if line:match("MemFree:") then
+      mem_free = string.match(line, "%d+")
+      count = count + 1;
+    elseif line:match("MemTotal:") then
+      mem_total = string.match(line, "%d+")
+      count = count + 1;
+    elseif line:match("SwapFree:") then
+      swap_free = string.match(line, "%d+")
+      count = count + 1;
+    elseif line:match("SwapTotal:") then
+      swap_total = string.match(line, "%d+")
+      count = count + 1;
+    end
+    line = fh:read()
+  end
+  io.close(fh)
+
+  mem_percent = 100 * (mem_total - mem_free) / mem_total;
+  swap_percent = 100 * (swap_total - swap_free) / swap_total;
+
+  return {mem_percent, swap_percent}
+end
+
+----------------------------------------------------
+-- ethernet (in kb/update-interval)
+----------------------------------------------------
+function ethernet(eth)
+  local tot_eth_in, tot_eth_out, tmp, fh
+  local eth_in, eth_out
+
+  fh = io.open("/proc/net/dev")
+  line = fh:read()
+  while line do
+    if string.match(line, eth) then
+      tmp = string.find (line,":") -- e.g. skip the 0 on ehth0
+      tot_eth_in = string.match(line, "%s*%d+", tmp) -- first decimal number are total bytes
+      tot_eth_out = string.gsub(line,"^.*:%s*%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+%d+%s+(%d+).*$", "%1")
+      eth_in = (tot_eth_in - tot_eth_in_old) / 1024 -- / INTERVAL
+      eth_out = (tot_eth_out - tot_eth_out_old) / 1024 -- / INTERVAL
+      tot_eth_in_old = tot_eth_in
+      tot_eth_out_old = tot_eth_out
+
+      eth_in = string.format("%5.1f", eth_in)
+      eth_out = string.format("%4.1f", eth_out)
+
+      io.close(fh);
+      return {eth_in, eth_out}
+    end
+    line = fh:read()
+  end
+  io.close(fh);
+end
+
+----------------------------------------------------
+-- grep's for ^From in a mailbox (for mbox'es)
+----------------------------------------------------
+--function mailbox_count(mbox)
+  --local count, line
+  --count = 0
+  --for line in io.lines(mbox) do
+    --if string.match(line, "^From [%w_\%+-]+") then
+      --count = count + 1
+    --end
+  --end
+  --return count
+--end
+
+----------------------------------------------------
+-- DF (disk-free) bar
+----------------------------------------------------
+function diskfree(cmd)
+  local z, line, ph, df
+  df = {}
+  z = 1
+  ph = io.popen(cmd)
+  line = ph:read() -- skip first line
+  line = ph:read()
+  while line do
+    perc = string.gsub(line, "^[^%s]+%s+[^%s]+%s+[^%s]+%s+[^%s]+%s+(%w+).+$", "%1")
+    perc = perc + 0
+    if (perc < 0) then
+      perc = 0;
+    end
+    df[z] = perc;
+    z = z + 1
+    line = ph:read()
+  end
+  io.close(ph);
+  return df
+end
+
+--============================
+-- init some global variables
+--============================
+tot_eth_in_old = 0
+tot_eth_out_old = 0
+df_interval = 0
+mailbox_interval = 0
+cpu_old_sum = 0
+cpu_old_user = 0
+cpu_old_nice = 0
+cpu_old_idle = 0
+
+df_data = {} -- blinking variables initialising for df
+df_blink = {}
+df_blink[1] = false
+df_blink[2] = false
+df_blink[3] = false
+
+--====================
+-- set some constants
+--====================
+INTERVAL = 0.992        -- in seconds (note not all 'sleep' allow floats!, use an iteger then).
+                        -- somebit less than a second, because the script takes some time itself.
+--os.setlocale("de_CH")   -- date must not return special language chars - won't work else with awesome
+
+--==================================================
+-- main loop
+--==================================================
+pipeh = io.popen("awesome-client", "w")
+
+while os.execute("sleep "..INTERVAL) do 
+
+  --example for 2.3 awesome versions
+  --data = ethernet("eth0")
+  --out = out.."0 widget_tell sb_top tb_net_in text <span weight='bold' foreground='#009966'>"..data[1].."</span>\n"
+  --out = out.."0 widget_tell sb_top gr_net data in "..data[1].."\n"
+  --out = out.."0 widget_tell sb_top tb_net_out text <span weight='bold' foreground='#996600'>"..data[2].."</span>\n"
+  --out = out.."0 widget_tell sb_top gr_net data out "..data[2].."\n"
+
+  out = ""
+
+  data = ethernet("eth0")
+  out = out.."tb_net_in.text =  \"<span weight='bold' foreground='#009966'>"..data[1].."</span>\"\n"
+  out = out.."gr_net:plot_data_add('in'," .. data[1] .. ")\n"
+  out = out.."tb_net_out.text =  \"<span weight='bold' foreground='#996600'>"..data[2].."</span>\"\n"
+  out = out.."gr_net:plot_data_add('out'," .. data[2] .. ")\n"
+
+  data = cpu("cpu0")
+  out = out.."gr_cpu:plot_data_add('user'," .. data[1] .. ")\n"
+  out = out.."gr_cpu:plot_data_add('nice'," .. data[2] .. ")\n"
+  out = out.."gr_cpu:plot_data_add('total'," .. data[3] .. ")\n"
+
+  data = memory("/proc/meminfo")
+  out = out..'pb_mem:bar_data_add("mem",' .. data[1] .. ')\n'
+  out = out..'pb_mem:bar_data_add("swap",' .. data[2] .. ')\n'
+
+  df_interval = df_interval - 1
+  if df_interval < 1 then
+    df_data = diskfree("df /dev/hda7 /dev/hda3 /dev/hda5")
+    out = out..'pb_diskfree:bar_data_add("root",' .. df_data[1] .. ')\n'
+    out = out..'pb_diskfree:bar_data_add("home",' ..  df_data[2] .. ')\n'
+    out = out..'pb_diskfree:bar_data_add("multi",' ..  df_data[3] ..')\n'
+    df_interval = 20 -- only diskfree() each 20'th loop
+  end
+
+   --17:17 <Habbie> ./sys/wait.h:#define WEXITSTATUS(x)     ((_W_INT(x) >> 8) & 0x000000ff)
+  mailbox_interval = mailbox_interval - 1
+  if mailbox_interval < 1 then
+    value = math.floor(os.execute("mbox-count-fix-atime  /home/calmar/.mail/inbox") / 256 % 256)
+    out = out..'tb_mail.text = "<span foreground=\'#339933\'>[</span><span weight=\'bold\' foreground=\'#cc3333\'>'..value..'</span><span foreground=\'#339933\'>]</span> "\n'
+    mailbox_interval = 10
+  end
+
+  value = os.date("%X %a, %e %b")
+  out = out.."tb_date.text = \"<span weight='bold' foreground='#009900'>"..value.."</span>\"\n"
+
+  ---------------------------
+  -- blinking (alarm) for df
+  ---------------------------
+  --if df_blink[1] then -- reset color
+    --out = out.."0 widget_tell sb_top pb_diskfree bordercolor root #4444cc".."\n"; df_blink[1] = false
+  --elseif df_data[1] > 60 then -- blink when value > x
+    --out = out.."0 widget_tell sb_top pb_diskfree bordercolor root #ff0000".."\n"; df_blink[1] = true
+  --end
+  --if df_blink[2] then
+    --out = out.."0 widget_tell sb_top pb_diskfree bordercolor home #336633".."\n"; df_blink[2] = false
+  --elseif df_data[2] > 86 then
+    --out = out.."0 widget_tell sb_top pb_diskfree bordercolor home #ff0000".."\n"; df_blink[2] = true
+  --end
+  --if df_blink[3] then
+    --out = out.."0 widget_tell sb_top pb_diskfree bordercolor multi #663333".."\n"; df_blink[3] = false
+  --elseif df_data[3] > 98 then
+    --out = out.."0 widget_tell sb_top pb_diskfree bordercolor multi #ff0000".."\n"; df_blink[3] = true
+  --end
+
+  -----------------
+  -- print finally
+  -----------------
+
+  pipeh:write(out.."\n")
+  pipeh:flush()
+end

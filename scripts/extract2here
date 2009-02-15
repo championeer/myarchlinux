@@ -1,0 +1,3 @@
+#!/bin/bash
+#file-roller -h $*
+file-roller --extract-to="""$*.FILES""" --force """$*"""

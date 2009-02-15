@@ -1,0 +1,24 @@
+# 
+# /etc/fstab: static file system information
+#
+# <file system>        <dir>         <type>    <options>          <dump> <pass>
+none                   /dev/pts      devpts    defaults            0      0
+none                   /dev/shm      tmpfs     defaults            0      0
+
+
+/dev/cdrom /media/cdrom   auto    ro,user,noauto,unhide   0      0
+/dev/dvd /media/dvd   auto    ro,user,noauto,unhide   0      0
+/dev/sda10 /usr ext3 defaults,noatime,nodiratime 0 1
+/dev/sda11 swap swap defaults 0 0
+/dev/sda12 / ext3 defaults,noatime,nodiratime 0 1
+/dev/sda13 /home xfs defaults,noatime,nodiratime 0 1
+/dev/sda7 /boot ext3 defaults 0 1
+/dev/sda8 /var ext3 defaults 0 1
+/dev/sda9 /tmp ext3 defaults 0 1
+/dev/sda5 /media/WORKPLACE ntfs-3g defaults,locale=en_US.UTF-8 0 0
+/dev/sda1 /media/HOME ntfs-3g defaults,locale=en_US.UTF-8 0 0
+/dev/sda6 /media/PORT vfat utf8,users,rw,umask=111,dmask=000 0 0
+#usb for virtualbox
+#none /proc/bus/usb usbfs devgid=1002,devmode=0666 0 0
+none /proc/bus/usb usbfs auto,busgid=108,busmode=0775,devgid=108,devmode=0666 0 0
+

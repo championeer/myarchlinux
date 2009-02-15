@@ -1,0 +1,64 @@
+#!/bin/awk -f
+BEGIN {
+
+DATE_CMD = "date +\"%d/%m/%y-%H:%M\"";
+BAT_CMD = "acpi -b | awk '{ print $4}' | head -1 | sed -e s/,//"
+VOLUME_CMD = "amixer get Master | grep Left | grep % | awk '{print $5}' | cut -d [ -f2 | cut -d% -f1"
+CPUT_CMD = "acpi -t | grep Thermal | grep 1: | awk '{print $4}'"
+#WIFI_CMD = "sudo iwconfig wlan0 | grep Link | awk '{print $2}' | sed -e s/Quality=// | cut -d/ -f1"
+ACBRANCH = "acpi -b | awk '{ print $3}'"
+#MOCINFO = "mocinfo"
+RAF = 1;  
+
+	while (!system("sleep " RAF ))
+  	{
+		#date
+			DATE_CMD | getline DATE;
+			close(DATE_CMD);	
+		#bat
+			BAT_CMD | getline BAT
+			close(BAT_CMD);		
+		#vol
+			VOLUME_CMD | getline VOLUME
+			close(VOLUME_CMD);
+		#cpu_temp
+			CPUT_CMD | getline CPUT
+			close(CPUT_CMD);	
+		#wifi
+			#WIFI_CMD | getline WIFI
+			#close(WIFI_CMD);	
+		#ac
+			ACBRANCH | getline AC
+			close(ACBRANCH);	
+		#moc
+#			MOCINFO | getline MOC
+#			close(MOCINFO)
+		#mem
+	   count = 0;
+      while ((getline < "/proc/meminfo") > 0)
+      {
+        if ("MemFree:" == $1){mem_free = $2;count++;}
+        else if ("MemTotal:" == $1){mem_total = $2;count++;}
+        else if ("SwapFree:" == $1){swap_free = $2;count++;}
+        else if ("SwapTotal:" == $1){swap_total = $2;count++;}
+        if (count >= 4){break;}
+      }
+      close("/proc/meminfo");
+      mem_percent = 100 * (mem_total - mem_free) / mem_total;
+	  swap_percent = 100 * (swap_total - swap_free) / swap_total
+	
+	#if(WIFI=="0" || WIFI=="Quality:0"){WIFI="No"}	
+#	print "0 widget_tell top tb_moc text "		   MOC ""	
+	print "0 widget_tell top tb_hour text "        DATE " ";
+	print "0 widget_tell top bat text "            BAT ""; 
+	print "0 widget_tell top pb_bat data bat "     BAT "";
+	print "0 widget_tell top pb_vol data vol "     VOLUME; 
+	print "0 widget_tell top tb_temp text " 	   CPUT "°C"; 
+	#print "0 widget_tell top tb_wifi text "        WIFI "%"; 
+	print "0 widget_tell top pb_ram data ram "     mem_percent;
+	print "0 widget_tell top pb_ram data swap "    swap_percent;
+
+	print ""; 
+	
+	}
+}

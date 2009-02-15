@@ -1,0 +1,12 @@
+#!/bin/bash
+# vim:sts=4:ai:et:
+
+while ! {
+    ps x | grep compiz | grep -v grep >/dev/null 2>&1
+}
+do
+sleep 3
+done
+
+exec gnome-do -quiet >/dev/null 2>&1 &
+echo "Gnome-Do started"

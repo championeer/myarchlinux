@@ -1,0 +1,5 @@
+#!/bin/bash
+while true ; do 
+cpu=`cpu <<< "" | grep 1p | awk '{ print $2 }' | cut -f 1 -d '.' `
+echo 0 widget_tell top gr_cpu data cpu $cpu | awesome-client
+done

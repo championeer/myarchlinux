@@ -1,0 +1,58 @@
+#!/bin/sh
+
+MIXER=vmix0-vol
+HPMIXER=jack.int-speaker.int-speaker
+CURRENTVOL=`ossmix -d0 $MIXER | awk '{print $10}'`
+CURRENTVOLSPEAKER=`ossmix -d0 $HPMIXER | awk '{print $10}'`
+VOL=`echo "$CURRENTVOL * 4" | bc`
+CURRENTVOL=${CURRENTVOL/.*}
+ADJUSTED=$(($2+$CURRENTVOL))
+
+case $1 in
+
+#OPTION FOR CHOOSE THE MIXER VOLUME
+
+	"-r")
+	ossmix -d0 $MIXER $ADJUSTED:$ADJUSTED > /dev/null
+	echo "$VOL%"
+	;;
+
+#OPTION FOR DRAW THE BAR (REQUIRE Dzen2 AND MY Barp)
+
+	"-b" | "--bar")
+	ossmix -d0 $MIXER $ADJUSTED:$ADJUSTED > /dev/null
+	echo "$VOL%"
+	(echo "`barp $VOL`"; sleep 0.5) | dzen2 -y 360 -x 520 -w 250 -bg black -fg grey
+	;;
+
+#OPTION FOR MUTE/UNMUTE THE MIXER VOLUME (TOGGLE)
+	
+	"-t" | "--toggle")
+	OLDVOL=`cat $HOME/.soundmanvol`
+	if [ $CURRENTVOL != 0 ] ; then
+	 	echo $CURRENTVOL > $HOME/.soundmanvol
+		ossmix -d0 $MIXER 0:0 > /dev/null
+	fi
+
+	if [ $CURRENTVOL == 0 ] ; then
+		ossmix -d0 $MIXER $OLDVOL:$OLDVOL > /dev/null
+	fi
+	;;
+
+#OPTION FOR MUTE/UNMUTE THE PC SPEAKER (TOGGLE)
+	
+	"-ts" | "--toggle-speaker")
+	if [ $CURRENTVOLSPEAKER == 0.0:0.0  ] ; then
+		ossmix -d0 $HPMIXER 100:100 #> /dev/null
+	fi
+	if [ $CURRENTVOLSPEAKER != 0.0:0.0 ] ; then
+		ossmix -d0 $HPMIXER 0:0 #> /dev/null
+	fi
+	;;
+
+#IF THERE ARE NO OPTION , PRINT THE CURRENT VOLUME
+
+	*)
+	echo "$VOL%"
+	;;
+esac

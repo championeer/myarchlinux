@@ -1,0 +1,28 @@
+#!/bin/bash
+#PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:~/bin
+#export PATH
+
+case "$1" in
+start)
+    echo -n "Start lamp service..."
+    /etc/init.d/apache2 start
+    /etc/init.d/mysql start
+    echo "OK"
+;;
+stop)
+    echo -n "Stop lamp service..."
+    /etc/init.d/apache2 stop
+    /etc/init.d/mysql stop
+    echo "OK"
+;;
+restart)
+    echo -n "Restart lamp service..."
+    /etc/init.d/apache2 restart
+    /etc/init.d/mysql restart
+    echo "OK"
+;;
+*)
+    echo "Usage: $0     {start|stop|restart}"
+esac
+
+exit 0

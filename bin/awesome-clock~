@@ -1,0 +1,28 @@
+#!/bin/sh
+# this script is for awesome 2.3
+
+# Point this to a directory you can write to. 
+#PID=~/var/run/awesome_clock.pid
+PID=~/bin/awesome_clock.pid
+
+updateClock() {
+   # See 'man date' to see the possible replacements for the % fields.
+   echo "0 widget_tell top clock text "   " `date +\"%a, %b %d %I:%M %p\"`" | awesome-client
+}
+
+# This will prevent this script from running multiple times
+if [ -f $PID ] ; then
+   kill -0 `cat $PID` 2> /dev/null
+   if [ $? -ne 0 ] ; then
+       echo "["`date`"] $0 killed bogus lock file ["`cat $PID`"]"
+   else
+       echo "["`date`"] $0 already running ["`cat $PID`"]"
+       exit
+   fi
+fi
+echo $$ > $PID
+
+while true; do
+  updateClock
+  sleep 10;
+done

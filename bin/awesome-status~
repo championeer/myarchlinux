@@ -1,0 +1,14 @@
+#!/bin/bash
+
+sleep 2;
+
+while ! pgrep awesome >/dev/null
+do
+    echo "waiting for 'awsome-wm' to start"
+    sleep 2;
+done
+
+awesome-status.lua
+
+#awesome-status.awk <<< "" | awesome-client
+# the awk stript needs some bogus input in order to start right away (<<< "")

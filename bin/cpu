@@ -1,0 +1,35 @@
+#!/bin/awk -f
+comp = 0;
+{
+comp = 0;	
+interval_tuned = 1;
+while (!system("sleep " interval_tuned)) # still hard to ctrl-c, but well..
+  {
+      ocpustats = 0;
+
+      while ((getline < "/proc/stat") > 0)
+      {
+        close("/proc/stat"); # xxx: scanning only the first line/cpu for now
+        break;
+      }
+      nsum = 0;
+      for (i = 2; i <= NF; i++)  # add together all values
+      nsum += $i;
+
+      idlediff = $5 - pcu_old_idle; # new idle - old idle
+      frmtotal = nsum - pcu_old_sum - (idlediff < 0 ? idlediff : 0); # idlediff can be < 0 ?
+      frmtotal =  frmtotal < 1 ? 1 : frmtotal;
+      cpu_percent = 100 - (idlediff > 0 ? idlediff : 0) * 100 / frmtotal;
+
+      pcu_old_sum = nsum;
+      pcu_old_idle = $5;
+
+print comp"p "  cpu_percent
+if (comp >= 1)
+{
+(!system("killall cpu"))
+}
+#print comp
+comp++;
+ }
+}
