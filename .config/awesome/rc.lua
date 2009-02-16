@@ -60,6 +60,7 @@ floatapps =
     ["Mirage"] = true,
     ["MPlayer"] = true,
     ["gcalctool"] = true,
+    ["speedcrunch"] = true,
     -- FireFox windows
     ["Saved Passwords"] = true,
     ["Cookies"] = true,
@@ -149,10 +150,10 @@ awesomemenu = {
 mainmenu = 
 awful.menu.new({ 
     items = { 
-                { "Term"        , terminal },
-                { "FF"          , browser },
+                { "Office"        , "soffice" },
+                { "FireFox"          , browser },
                 { "PCManFM"     , fileManager },
-                { "Cal"        , "gcalctool" },
+                { "Cal"        , "speedcrunch" },
                 { "Gimp"        , "gimp" },
                 { "Screen"      , terminal.." -e screen -RR -A -a" },
                 { "Awesome"     , awesomemenu },
